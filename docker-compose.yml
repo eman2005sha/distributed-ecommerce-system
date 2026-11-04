@@ -1,0 +1,25 @@
+services:
+  laravel-app:
+    build:
+      context: ./main-app
+      dockerfile: Dockerfile
+    container_name: ecommerce-main-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./main-app:/var/www/html
+      - ./proto:/var/www/html/proto
+    depends_on:
+      - inventory-service
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    container_name: ecommerce-inventory-service
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./inventory-service:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./proto:/usr/src/app/proto
