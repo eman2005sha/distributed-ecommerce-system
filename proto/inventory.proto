@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package inventory;
+
+service InventoryService {
+  // 1. معرفة الكمية المتوفرة لمنتج معين
+  rpc GetStock (StockRequest) returns (StockResponse);
+  
+  // 2. التحقق من كميات كل منتجات الطلب وحجزها في طلب واحد
+  rpc ReserveStock (OrderStockRequest) returns (OrderStockResponse);
+  
+  // 3. إرجاع الكمية المحجوزة إلى المستودع في حال فشل حفظ الطلب
+  rpc ReleaseStock (OrderStockRequest) returns (OrderStockResponse);
+}
+
+message StockRequest {
+  int32 product_id = 1;
+}
+
+message StockResponse {
+  int32 product_id = 1;
+  int32 available_stock = 2;
+}
+
+message StockItem {
+  int32 product_id = 1;
+  int32 quantity = 2;
+}
+
+message OrderStockRequest {
+  repeated StockItem items = 1;
+}
+
+message OrderStockResponse {
+  bool success = 1;
+  string message = 2;
+  int32 failed_product_id = 3;
+  int32 remaining_stock = 4;
+}
